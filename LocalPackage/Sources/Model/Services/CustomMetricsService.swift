@@ -82,6 +82,15 @@ struct CustomMetricsService {
         userDefaultsRepository.metricsBarConfiguration = metricsBarConfiguration
     }
 
+    func setSourceEnabled(_ isEnabled: Bool, for id: UUID) {
+        var configuration = userDefaultsRepository.customMetricsConfiguration
+        guard let index = configuration.sources.firstIndex(where: { $0.id == id }) else {
+            return
+        }
+        configuration.sources[index].isEnabled = isEnabled
+        userDefaultsRepository.customMetricsConfiguration = configuration
+    }
+
     func perform(action: (_ securityScopedURL: URL) -> Void, for source: CustomMetricsSource) throws {
         let (isStale, url) = try urlClient.create(source.bookmark, .withSecurityScope)
         if isStale, let refreshed = try? urlClient.bookmarkData(url, .withSecurityScope) {
@@ -128,7 +137,7 @@ struct CustomMetricsService {
     }
 
     private func reconcile() {
-        let sources = userDefaultsRepository.customMetricsConfiguration.sources
+        let sources = userDefaultsRepository.customMetricsConfiguration.sources.filter(\.isEnabled)
         let desiredIDs = Set(sources.map(\.id))
         let newSources = appStateClient.withLock { appState -> [CustomMetricsSource] in
             let currentIDs = Set(appState.customMetricsObservers.keys)
@@ -153,7 +162,10 @@ struct CustomMetricsService {
     }
 
     private func emitFailure(for source: CustomMetricsSource) {
-        let sources = userDefaultsRepository.customMetricsConfiguration.sources
+        let sources = userDefaultsRepository.customMetricsConfiguration.sources.filter(\.isEnabled)
+        guard sources.contains(where: { $0.id == source.id }) else {
+            return
+        }
         appStateClient.send(\.metrics, default: .init()) { metrics in
             if let index = metrics.customMetricsBundles.firstIndex(where: { $0.id == source.id }) {
                 metrics.customMetricsBundles[index].isFailed = true
@@ -173,7 +185,10 @@ struct CustomMetricsService {
     }
 
     private func emitSuccess(snapshot: CustomMetricsSnapshot, for source: CustomMetricsSource) {
-        let sources = userDefaultsRepository.customMetricsConfiguration.sources
+        let sources = userDefaultsRepository.customMetricsConfiguration.sources.filter(\.isEnabled)
+        guard sources.contains(where: { $0.id == source.id }) else {
+            return
+        }
         appStateClient.send(\.metrics, default: .init()) { metrics in
             if let index = metrics.customMetricsBundles.firstIndex(where: { $0.id == source.id }) {
                 metrics.customMetricsBundles[index].snapshot = snapshot

@@ -125,6 +125,14 @@ struct CustomMetricsServiceTests {
     }
 
     @Test
+    func setSourceEnabled_updates_matching_source() {
+        let storage = UserDefaultsClient.storage(initialSources: [makeSource()])
+        let sut = CustomMetricsService(.testDependencies(userDefaultsClient: storage.client))
+        sut.setSourceEnabled(false, for: UUID(1))
+        #expect(storage.currentConfiguration()?.sources.first?.isEnabled == false)
+    }
+
+    @Test
     func perform_passes_resolved_security_scoped_url_to_action() throws {
         let receivedURLs = AllocatedUnfairLock<[URL]>(initialState: [])
         let sut = CustomMetricsService(.testDependencies(
@@ -257,6 +265,42 @@ struct CustomMetricsServiceTests {
         await waitUntil { appState.withLock(\.customMetricsObservers).isEmpty }
         #expect(appState.withLock(\.customMetricsObservers).isEmpty)
         #expect(appState.withLock(\.metrics.latestValue)?.customMetricsBundles.isEmpty == true)
+        sut.stopMonitoring()
+    }
+
+    @Test
+    func startMonitoring_pauses_and_resumes_source_when_configuration_changes() async throws {
+        let appState = AllocatedUnfairLock<AppState>(initialState: .init())
+        let source = makeSource()
+        let storage = UserDefaultsClient.storage(initialSources: [source])
+        let sut = CustomMetricsService(.testDependencies(
+            appStateClient: .testDependency(appState),
+            dataClient: testDependency(of: DataClient.self) {
+                $0.read = { _ in Data(snapshotJSON.utf8) }
+            },
+            urlClient: testDependency(of: URLClient.self) {
+                $0.create = { _, _ in (false, URL(filePath: "/tmp/card.json")) }
+                $0.startAccessingSecurityScopedResource = { _ in true }
+            },
+            userDefaultsClient: storage.client
+        ))
+        sut.startMonitoring()
+        await waitUntil { appState.withLock(\.metrics.latestValue)?.customMetricsBundles.isEmpty == false }
+        sut.setSourceEnabled(false, for: source.id)
+        sut.emitConfigurationChange()
+        await waitUntil {
+            appState.withLock(\.customMetricsObservers).isEmpty
+                && appState.withLock(\.metrics.latestValue)?.customMetricsBundles.isEmpty == true
+        }
+        sut.setSourceEnabled(true, for: source.id)
+        sut.emitConfigurationChange()
+        await waitUntil {
+            appState.withLock(\.customMetricsObservers)[source.id] != nil
+                && appState.withLock(\.metrics.latestValue)?.customMetricsBundles.isEmpty == false
+        }
+        #expect(appState.withLock(\.metrics.latestValue)?.customMetricsBundles == [
+            CustomMetricsBundle(id: UUID(1), snapshot: try snapshot),
+        ])
         sut.stopMonitoring()
     }
 

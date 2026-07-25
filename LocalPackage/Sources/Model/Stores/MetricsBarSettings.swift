@@ -47,7 +47,9 @@ public final class MetricsBarSettings: Composable {
         self.logService = .init(appDependencies)
         self.systemMetricsService = .init(appDependencies)
         self.metricsBarConfiguration = metricsBarConfiguration ?? userDefaultsRepository.metricsBarConfiguration
-        self.customMetricsSources = customMetricsSources ?? userDefaultsRepository.customMetricsConfiguration.sources
+        self.customMetricsSources = (
+            customMetricsSources ?? userDefaultsRepository.customMetricsConfiguration.sources
+        ).filter(\.isEnabled)
         self.action = action
     }
 
@@ -56,7 +58,7 @@ public final class MetricsBarSettings: Composable {
         case let .task(screenName):
             logService.notice(.screenView(name: screenName))
             metricsBarConfiguration = userDefaultsRepository.metricsBarConfiguration
-            customMetricsSources = userDefaultsRepository.customMetricsConfiguration.sources
+            customMetricsSources = userDefaultsRepository.customMetricsConfiguration.sources.filter(\.isEnabled)
             task?.cancel()
             task = Task.immediate { [weak self, appStateClient] in
                 let stream = appStateClient.withLock(\.customMetricsConfigurationChanges.stream)
@@ -115,7 +117,7 @@ public final class MetricsBarSettings: Composable {
     }
 
     private func updateCustomMetricsConfiguration() {
-        customMetricsSources = userDefaultsRepository.customMetricsConfiguration.sources
+        customMetricsSources = userDefaultsRepository.customMetricsConfiguration.sources.filter(\.isEnabled)
         metricsBarConfiguration = userDefaultsRepository.metricsBarConfiguration
     }
 

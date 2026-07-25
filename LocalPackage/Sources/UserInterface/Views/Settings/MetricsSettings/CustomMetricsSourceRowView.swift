@@ -24,11 +24,29 @@ import SwiftUI
 struct CustomMetricsSourceRowView: View {
     var source: CustomMetricsSource
     var isErrorDetected: Bool
+    var enabledChanged: (Bool) async -> Void
     var removeButtonTapped: () async -> Void
     var sourceLinkTapped: () async -> Void
 
     var body: some View {
         LabeledContent {
+            Button {
+                Task {
+                    await enabledChanged(!source.isEnabled)
+                }
+            } label: {
+                Label {
+                    if source.isEnabled {
+                        Text("pauseCustomMetricsSource", bundle: .module)
+                    } else {
+                        Text("resumeCustomMetricsSource", bundle: .module)
+                    }
+                } icon: {
+                    Image(systemName: source.isEnabled ? "pause.circle" : "play.circle")
+                }
+                .labelStyle(.iconOnly)
+            }
+            .buttonStyle(.borderless)
             Button(role: .destructive) {
                 Task {
                     await removeButtonTapped()

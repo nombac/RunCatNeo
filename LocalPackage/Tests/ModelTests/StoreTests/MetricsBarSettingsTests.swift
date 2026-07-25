@@ -7,14 +7,19 @@ import Testing
 @testable import Model
 
 struct MetricsBarSettingsTests {
-    private func makeSource(id: UUID, displayName: String = "Card") -> CustomMetricsSource {
+    private func makeSource(
+        id: UUID,
+        displayName: String = "Card",
+        isEnabled: Bool = true
+    ) -> CustomMetricsSource {
         CustomMetricsSource(
             id: id,
             displayName: displayName,
             symbol: "staroflife",
             fileURL: URL(filePath: "/tmp/card.json"),
             bookmark: Data("bookmark".utf8),
-            createdAt: Date(timeIntervalSince1970: 0)
+            createdAt: Date(timeIntervalSince1970: 0),
+            isEnabled: isEnabled
         )
     }
 
@@ -29,6 +34,17 @@ struct MetricsBarSettingsTests {
         ))
         await sut.send(.task("MetricsBarSettingsTests"))
         #expect(sut.customMetricsSources == [source])
+        await sut.send(.onDisappear)
+    }
+
+    @MainActor @Test
+    func send_task_excludes_paused_customMetricsSources() async {
+        let enabledSource = makeSource(id: UUID(1))
+        let pausedSource = makeSource(id: UUID(2), isEnabled: false)
+        let storage = UserDefaultsClient.storage(initialSources: [enabledSource, pausedSource])
+        let sut = MetricsBarSettings(.testDependencies(userDefaultsClient: storage.client))
+        await sut.send(.task("MetricsBarSettingsTests"))
+        #expect(sut.customMetricsSources == [enabledSource])
         await sut.send(.onDisappear)
     }
 

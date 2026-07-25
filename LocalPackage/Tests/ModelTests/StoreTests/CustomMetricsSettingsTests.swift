@@ -171,6 +171,29 @@ struct CustomMetricsSettingsTests {
     }
 
     @MainActor @Test
+    func send_customMetricsSourceEnabledChanged_updates_source_and_emits_change() async {
+        let appState = AllocatedUnfairLock<AppState>(initialState: .init())
+        let existingID = UUID(2)
+        let storage = UserDefaultsClient.storage(initialSources: [
+            CustomMetricsSource(
+                id: existingID,
+                displayName: "Paused",
+                fileURL: URL(filePath: "/tmp/paused.json"),
+                bookmark: Data(),
+                createdAt: Date(timeIntervalSince1970: 0)
+            ),
+        ])
+        let sut = CustomMetricsSettings(.testDependencies(
+            appStateClient: .testDependency(appState),
+            userDefaultsClient: storage.client
+        ))
+        await sut.send(.customMetricsSourceEnabledChanged(existingID, false))
+        #expect(sut.customMetricsSources.first?.isEnabled == false)
+        #expect(storage.currentConfiguration()?.sources.first?.isEnabled == false)
+        #expect(appState.withLock(\.customMetricsConfigurationChanges.latestValue) != nil)
+    }
+
+    @MainActor @Test
     func send_removingCustomMetricsSourceConfirmed_removes_pending_source() async {
         let existingID = UUID(3)
         let storage = UserDefaultsClient.storage(initialSources: [

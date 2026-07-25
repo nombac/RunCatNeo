@@ -27,6 +27,7 @@ public struct CustomMetricsSource: Codable, Sendable, Equatable, Identifiable {
     public var fileURL: URL
     public var bookmark: Data
     public var createdAt: Date
+    public var isEnabled: Bool
 
     public init(
         id: UUID,
@@ -34,7 +35,8 @@ public struct CustomMetricsSource: Codable, Sendable, Equatable, Identifiable {
         symbol: String? = nil,
         fileURL: URL,
         bookmark: Data,
-        createdAt: Date
+        createdAt: Date,
+        isEnabled: Bool = true
     ) {
         self.id = id
         self.displayName = displayName
@@ -42,5 +44,17 @@ public struct CustomMetricsSource: Codable, Sendable, Equatable, Identifiable {
         self.fileURL = fileURL
         self.bookmark = bookmark
         self.createdAt = createdAt
+        self.isEnabled = isEnabled
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(UUID.self, forKey: .id)
+        self.displayName = try container.decode(String.self, forKey: .displayName)
+        self.symbol = try container.decodeIfPresent(String.self, forKey: .symbol)
+        self.fileURL = try container.decode(URL.self, forKey: .fileURL)
+        self.bookmark = try container.decode(Data.self, forKey: .bookmark)
+        self.createdAt = try container.decode(Date.self, forKey: .createdAt)
+        self.isEnabled = try container.decodeIfPresent(Bool.self, forKey: .isEnabled) ?? true
     }
 }

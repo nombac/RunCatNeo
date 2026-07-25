@@ -105,6 +105,11 @@ public final class CustomMetricsSettings: Composable {
             pendingRemovalSourceID = id
             showingConfirmationDialog = true
 
+        case let .customMetricsSourceEnabledChanged(id, isEnabled):
+            customMetricsService.setSourceEnabled(isEnabled, for: id)
+            customMetricsSources = userDefaultsRepository.customMetricsConfiguration.sources
+            customMetricsService.emitConfigurationChange()
+
         case .removingCustomMetricsSourceConfirmed:
             guard let sourceID = pendingRemovalSourceID else { return }
             customMetricsService.removeSource(of: sourceID)
@@ -148,6 +153,7 @@ public final class CustomMetricsSettings: Composable {
         case helpButtonTapped
         case onCompletionFileImporter(Result<URL, any Error>)
         case removeCustomMetricsSourceButtonTapped(UUID)
+        case customMetricsSourceEnabledChanged(UUID, Bool)
         case removingCustomMetricsSourceConfirmed
         case removingCustomMetricsSourceCancelled
         case customMetricsSourceLinkTapped(CustomMetricsSource)
