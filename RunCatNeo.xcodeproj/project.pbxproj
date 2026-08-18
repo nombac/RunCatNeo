@@ -16,7 +16,6 @@
 		1C0CC4242FAA2AC7006AA17B /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		1C0CC4372FAA37D9006AA17B /* UnitTest.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = UnitTest.xctestplan; sourceTree = "<group>"; };
 		1C9FF5312F17E9A800362D48 /* RunCatNeo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RunCatNeo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		1C9FF5492F17FBD000362D48 /* LocalPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LocalPackage; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -55,7 +54,6 @@
 			isa = PBXGroup;
 			children = (
 				1C0CC4372FAA37D9006AA17B /* UnitTest.xctestplan */,
-				1C9FF5492F17FBD000362D48 /* LocalPackage */,
 				1C9FF5332F17E9A800362D48 /* RunCatNeo */,
 				1C9FF54A2F17FBEE00362D48 /* Frameworks */,
 				1C9FF5322F17E9A800362D48 /* Products */,
@@ -135,6 +133,9 @@
 			);
 			mainGroup = 1C9FF5282F17E9A800362D48;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				1C9FF5492F17FBD000362D48 /* XCLocalSwiftPackageReference "LocalPackage" */,
+			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 1C9FF5322F17E9A800362D48 /* Products */;
 			projectDirPath = "";
@@ -300,7 +301,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1.0.3;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = VJ5N2X84K8;
+				DEVELOPMENT_TEAM = 5373MS65BZ;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
@@ -328,7 +329,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.kyome.Neo.RunCat;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shirose.Neo.RunCat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -349,7 +350,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1.0.3;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = VJ5N2X84K8;
+				DEVELOPMENT_TEAM = 5373MS65BZ;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
@@ -377,7 +378,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.kyome.Neo.RunCat;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shirose.Neo.RunCat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -410,9 +411,17 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		1C9FF5492F17FBD000362D48 /* XCLocalSwiftPackageReference "LocalPackage" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = LocalPackage;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		1C9FF54B2F17FBEE00362D48 /* UserInterface */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 1C9FF5492F17FBD000362D48 /* XCLocalSwiftPackageReference "LocalPackage" */;
 			productName = UserInterface;
 		};
 /* End XCSwiftPackageProductDependency section */
