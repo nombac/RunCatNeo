@@ -59,7 +59,7 @@ https://dev.to/kyome22/luca-a-modern-architecture-for-swiftui-development-3g2i
 
 RunCat can watch any local JSON file in the documented format and render it as a card on the dashboard. Use it to display Claude Code usage, GPU temperature, GitHub contributions, remaining reminders, or anything else you can write to a file.
 
-<img src="./docs/images/en/cosmic_wall_recoil_db.png" width="345" height="520" alt="Cosmic Wall recoil DB custom metric" />
+<img src="./docs/images/en/cosmic_wall_recoil_db.png" width="602" height="674" alt="Cosmic Wall recoil DB custom metric" />
 
 - [JSON schema](docs/CustomMetricsSchema.md)
 - [Claude Code statusLine sample](docs/samples/claude-code/)
