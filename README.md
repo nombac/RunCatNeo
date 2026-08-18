@@ -4,6 +4,8 @@
 
 本リポジトリは、オリジナルのRunCat Neoを個人用途向けに拡張したものです。カスタムメトリクスの一時停止・再開機能、Codex連携時のコンテキスト使用率表示の調整、ローカル開発用のビルド設定を追加しています。
 
+<img src="./docs/images/en/cosmic_wall_recoil_db.png" width="602" height="674" alt="Cosmic Wall recoil DB custom metric" />
+
 **A cute running cat animation on your macOS menubar.**
 
 > [!CAUTION]
@@ -58,8 +60,6 @@ https://dev.to/kyome22/luca-a-modern-architecture-for-swiftui-development-3g2i
 ## Custom Metrics
 
 RunCat can watch any local JSON file in the documented format and render it as a card on the dashboard. Use it to display Claude Code usage, GPU temperature, GitHub contributions, remaining reminders, or anything else you can write to a file.
-
-<img src="./docs/images/en/cosmic_wall_recoil_db.png" width="602" height="674" alt="Cosmic Wall recoil DB custom metric" />
 
 - [JSON schema](docs/CustomMetricsSchema.md)
 - [Claude Code statusLine sample](docs/samples/claude-code/)
