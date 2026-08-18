@@ -1,5 +1,9 @@
 # RunCat Neo
 
+**このリポジトリについて**
+
+本リポジトリは、オリジナルのRunCat Neoを個人用途向けに拡張したものです。カスタムメトリクスの一時停止・再開機能、Codex連携時のコンテキスト使用率表示の調整、ローカル開発用のビルド設定を追加しています。
+
 **A cute running cat animation on your macOS menubar.**
 
 > [!CAUTION]
